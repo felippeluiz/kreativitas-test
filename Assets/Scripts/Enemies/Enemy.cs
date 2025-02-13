@@ -59,7 +59,6 @@ namespace Enemies
 
             if (_enteringScreen)
             {
-                moveX /= 2;
                 CheckEnteringScreen();
             }
             else

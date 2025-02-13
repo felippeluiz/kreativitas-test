@@ -280,6 +280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _prefabEnemy: {fileID: 5943773940072445762, guid: 2ad8b172e769ac34389640827a943d39, type: 3}
+  _levelList: {fileID: 11400000, guid: 00a65093c73e73f4a88a2445a756dbe4, type: 2}
 --- !u!4 &356282304
 Transform:
   m_ObjectHideFlags: 0
@@ -678,6 +679,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Cannon.CannonMovement, Assembly-CSharp
         m_MethodName: OnDragStarted
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 356282303}
+        m_TargetAssemblyTypeName: Enemies.EnemySpawner, Assembly-CSharp
+        m_MethodName: StartSpawns
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

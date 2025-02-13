@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using Gameflow;
 using UnityEngine;
 using Util;
 using Random = UnityEngine.Random;
@@ -7,27 +10,47 @@ namespace Enemies
     public class EnemySpawner : MonoBehaviour
     {
         [SerializeField] private Enemy _prefabEnemy;
+        [SerializeField] private LevelList _levelList;
 
         private GameObjectPool<Enemy> _enemyPool;
+        
+        private int _currentLevel = 0;
 
+        private bool _started = false;
+        private bool _finishedSpawns = false;
         private void Awake()
         {
             _enemyPool = new GameObjectPool<Enemy>(_prefabEnemy);
         }
-        
-        void Update()
+
+        public void StartSpawns()
         {
-            if (Input.GetButtonDown("Jump")) SpawnEnemy();
+            if(_started) return;
+            StartCoroutine(TimedSpawns());
+            _started = true;
         }
 
-        private void SpawnEnemy()
+        private IEnumerator TimedSpawns()
+        {
+            for (int i = 0; i < _levelList.Levels[_currentLevel].Enemies.Length; i++)
+            {
+                var enemy = _levelList.Levels[0].Enemies[i];      
+                SpawnEnemy(Random.Range(enemy.size.x,enemy.size.y+1), Random.Range(enemy.life.x,enemy.life.y+1));
+
+                yield return new WaitForSeconds(Random.Range(enemy.timeToNext.x, enemy.timeToNext.y));
+            }
+
+            _finishedSpawns = true;
+        }
+
+        public void SpawnEnemy(int size, int life)
         {
             var enemy = _enemyPool.Get();
             enemy.transform.parent = transform;
             
             bool randomIsLeft = Random.Range(0, 2) == 0; 
             
-            enemy.SetEnemy(Random.Range(0, 4), Random.Range(1, 30), randomIsLeft);
+            enemy.SetEnemy(size, life, randomIsLeft);
             
             //To position the enemy
             var offsetX = 0f;

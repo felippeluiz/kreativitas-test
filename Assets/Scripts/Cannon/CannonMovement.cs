@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Util;
 
 namespace Cannon
 {
@@ -11,17 +12,20 @@ namespace Cannon
     {
         [SerializeField] private Transform _cannonTransform;
 
-        [SerializeField] private float _minPositionX = -2.5f;
-        [SerializeField] private float _maxPositionX = 2.5f;
         [SerializeField] private float _timeToCrossScreen = 0.1f;
 
         private Vector3 _initialCannonPosition;
 
+        private float _minPositionX = -2.5f;
+        private float _maxPositionX = 2.5f;
         private float _totalXtoMove;
         private float _totalAmountMoved;
         private float _totalScreenXSpace;
         private void Start()
         {
+            _minPositionX = CameraLimit.GetCameraXLimit(true);
+            _maxPositionX = CameraLimit.GetCameraXLimit(false);
+            
             _initialCannonPosition = _cannonTransform.position;
             _totalScreenXSpace = _maxPositionX - _minPositionX;
         }
