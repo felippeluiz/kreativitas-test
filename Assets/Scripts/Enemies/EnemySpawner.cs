@@ -81,7 +81,7 @@ namespace Enemies
             var enemy = _enemyPool.Get();
             enemy.transform.parent = transform;
 
-            enemy.SetEnemy(size, life, goingRight, this);
+            enemy.SetEnemy(size, life, goingRight, this, false);
 
             enemy.transform.position = position;
 

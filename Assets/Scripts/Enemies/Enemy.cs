@@ -14,15 +14,18 @@ namespace Enemies
         [SerializeField] private TextMeshPro _txtLife;
         [SerializeField] private SpriteRenderer _renderer;
     
+        private EnemySpawner _enemySpawner;
         private int _size;
         private int _lifeValue;
         private int _totalLife;
-        private bool _enteringScreen = true;
-        private bool _goingRight = false;
         private float _bounceTime=1f;
         private float _totalBounceTime=0f;
+        private float _firstBounceTime=0f;
+        private float _firstBounceHeight = 0f;
         private float _rotateSpeed = 1f;
-        private EnemySpawner _enemySpawner;
+        private bool _enteringScreen = true;
+        private bool _goingRight = false;
+        private bool _firstBounce = false;
 
         public void SetEnemy(int size, int life, bool goingRight,EnemySpawner spawner, bool isEnteringScreen=true)
         {
@@ -37,8 +40,18 @@ namespace Enemies
         
             transform.localScale = new Vector3(scale, scale, 1);
 
-            transform.position = new Vector3(transform.position.x,_parameters.SizesParameters[safeSize].jumpYHeight+_renderer.bounds.extents.y,transform.position.z);
-        
+            if (isEnteringScreen)
+            {
+                transform.position = new Vector3(transform.position.x,
+                    _parameters.SizesParameters[safeSize].jumpYHeight + _renderer.bounds.extents.y,
+                    transform.position.z);
+            }
+            else
+            {
+                _firstBounce = false;
+                _firstBounceHeight = transform.position.y;
+            }
+
             UpdateColor();
         
             _goingRight = goingRight;
@@ -67,20 +80,14 @@ namespace Enemies
             }
             else
             {
-                var totalHeight = _parameters.SizesParameters[_size].jumpYHeight - _parameters.FloorY;
-
-                if (_bounceTime > _totalBounceTime)
+                if (!_firstBounce)
                 {
-                    _bounceTime = 0f; 
+                    DefaultBounce();
                 }
-
-                var posY = _parameters.FloorY + 
-                           _renderer.bounds.extents.y +
-                           (_parameters.BounceCurve.Evaluate(_bounceTime / _totalBounceTime) * totalHeight);
-            
-                transform.position = new Vector3(transform.position.x, posY, transform.position.z);
-            
-                _bounceTime += Time.deltaTime;
+                else
+                {
+                    FirstBounce();
+                }
             }
 
             moveVector += new Vector3(moveX, 0, 0);
@@ -89,6 +96,48 @@ namespace Enemies
             CheckChangeXDirection();
         
             transform.Rotate(Vector3.forward, _rotateSpeed*Time.deltaTime);
+        }
+
+        private void DefaultBounce()
+        {
+            var totalHeight = _parameters.SizesParameters[_size].jumpYHeight - _parameters.FloorY;
+
+            if (_bounceTime > _totalBounceTime)
+            {
+                _bounceTime = 0f; 
+            }
+
+            var posY = _parameters.FloorY + 
+                       _renderer.bounds.extents.y +
+                       (_parameters.BounceCurve.Evaluate(_bounceTime / _totalBounceTime) * totalHeight);
+            
+            transform.position = new Vector3(transform.position.x, posY, transform.position.z);
+            
+            _bounceTime += Time.deltaTime;
+        }
+
+        private void FirstBounce()
+        {
+            var currentHeight = transform.position.y - _parameters.FloorY;
+            var totalHeight = _parameters.SizesParameters[_size].jumpYHeight - _parameters.FloorY;
+            if (_firstBounceTime == 0f)
+            {
+                _firstBounceTime = currentHeight / totalHeight * _totalBounceTime;
+                _bounceTime = _firstBounceTime / 2f;
+            }
+            
+            var posY = _parameters.FloorY + 
+                       _renderer.bounds.extents.y +
+                       (_parameters.BounceCurve.Evaluate(_bounceTime / _totalBounceTime) * _firstBounceHeight);
+            
+            transform.position = new Vector3(transform.position.x, posY, transform.position.z);
+            
+            _bounceTime += Time.deltaTime;
+            if (_bounceTime >= _firstBounceTime)
+            {
+                _firstBounce = false;
+                _bounceTime = 0f;
+            }
         }
 
         private void CheckEnteringScreen()
