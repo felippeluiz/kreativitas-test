@@ -16,16 +16,19 @@ namespace Enemies
     
         private int _size;
         private int _lifeValue;
+        private int _totalLife;
         private bool _enteringScreen = true;
         private bool _goingRight = false;
         private float _bounceTime=1f;
         private float _totalBounceTime=0f;
         private float _rotateSpeed = 1f;
+        private EnemySpawner _enemySpawner;
 
-        public void SetEnemy(int size, int life, bool goingRight, bool isEnteringScreen=true)
+        public void SetEnemy(int size, int life, bool goingRight,EnemySpawner spawner, bool isEnteringScreen=true)
         {
             _size = size;
-            _lifeValue = life;
+            _totalLife = life;
+            _lifeValue = _totalLife;
             _txtLife.text = _lifeValue.ToString();
         
             var safeSize = size < _parameters.SizesParameters.Length ? size : _parameters.SizesParameters.Length - 1;
@@ -48,6 +51,7 @@ namespace Enemies
             _bounceTime=_totalBounceTime/2f;
 
             _rotateSpeed = Random.Range(-15f, 15f);
+            _enemySpawner = spawner;
         }
 
         private void Update()
@@ -132,7 +136,7 @@ namespace Enemies
         {
             _lifeValue = _lifeValue - damage < 0 ? 0 : _lifeValue - damage;
             _txtLife.text = _lifeValue.ToString();
-        
+            UpdateColor();
             if (_lifeValue<=0)
             {
                 Die();
@@ -141,6 +145,11 @@ namespace Enemies
 
         private void Die()
         {
+            if (_size > 0)
+            {
+                _enemySpawner.SpawnEnemyPositioned(_size-1,_totalLife,transform.position, true);                
+                _enemySpawner.SpawnEnemyPositioned(_size-1,_totalLife,transform.position, false);                
+            }
             OnDeath?.Invoke();
             OnDeath = null;
         }
