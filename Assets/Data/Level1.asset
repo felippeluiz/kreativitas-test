@@ -15,16 +15,16 @@ MonoBehaviour:
   Enemies:
   - size: {x: 0, y: 1}
     life: {x: 3, y: 7}
-    timeToNext: {x: 4, y: 6}
+    timeToNext: {x: 2, y: 3}
   - size: {x: 1, y: 2}
     life: {x: 2, y: 4}
-    timeToNext: {x: 7, y: 8}
+    timeToNext: {x: 6, y: 8}
   - size: {x: 3, y: 3}
     life: {x: 5, y: 7}
-    timeToNext: {x: 9, y: 9.5}
+    timeToNext: {x: 7.5, y: 10}
   - size: {x: 0, y: 0}
-    life: {x: 15, y: 20}
-    timeToNext: {x: 10, y: 12.8}
-  - size: {x: 1, y: 2}
-    life: {x: 1, y: 4}
+    life: {x: 20, y: 35}
+    timeToNext: {x: 10.5, y: 14}
+  - size: {x: 2, y: 3}
+    life: {x: 5, y: 8}
     timeToNext: {x: 0, y: 0}
